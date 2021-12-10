@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-//Defining a globally used struct, so it won't be newly declared everytime
-//the "Game" function 
+//Defining a globally used struct, so it won't be newly declared everytime 
+//the "Game" function gets used
 typedef struct Card
 {
   char Bez[50];
@@ -17,6 +17,7 @@ int Game();
 StruCard* AddCard(StruCard* pStart, StruCard* pNew);
 StruCard* CreateCard(const char* bez, int par1, double par2);
 void OutputList(StruCard* pStart);
+StruCard* ShuffleCards();
 
 
 
@@ -60,13 +61,16 @@ int Game()
   pStart = AddCard(pStart, CreateCard("Darth Vader", 42, 22.6));
   pStart = AddCard(pStart, CreateCard("Obi-Wan Kenobi", 35, 38.1));
   pStart = AddCard(pStart, CreateCard("Mace Windu", 43, 53.7));
-  pStart = AddCard(pStart, CreateCard("Darth Darth Binks", 100, 33.3));
+  pStart = AddCard(pStart, CreateCard("Jar Jar Binks", 25, 33.3));
   pStart = AddCard(pStart, CreateCard("Yoda", 41, 877.0));
   pStart = AddCard(pStart, CreateCard("Darth Maul", 38, 35.3));
   pStart = AddCard(pStart, CreateCard("Chewbacca", 30, 181.9));
   pStart = AddCard(pStart, CreateCard("Count Dooku", 39, 83.2));
 
   OutputList(pStart);
+
+
+
   system("pause");
   //strcpy(Card0->Bez, "Sheev Palpatine");
   //strcpy(Card1->Bez, "Anakin Skywalker");
@@ -78,25 +82,13 @@ int Game()
   //strcpy(Card7->Bez, "Darth Maul");
   //strcpy(Card8->Bez, "Chewbacca");
   //strcpy(Card9->Bez, "Count Dooku");
-
-
-
-
-
-
-
-
-
-
-
-
   return 0;
 }
 
 StruCard* AddCard(StruCard* pStart, StruCard* pNew)
 {
   pNew->pNext = NULL;
-  if (pStart == NULL) { // Leere Liste
+  if (pStart == NULL) { //Leere Liste
     pStart = pNew;
   }
   else {
@@ -123,6 +115,15 @@ void OutputList(StruCard* pStart)
   for (StruCard* pTmp = pStart; pTmp != NULL; pTmp = pTmp->pNext)
     printf("Bez = %s\n", pTmp->Bez);
 }
+
+StruCard* ShuffleCards()
+{
+
+}
+
+
+
+
 //Note to Collaborator
 //Im still trying to figure out how structs work.
 //I have figured out that the name "Card" is not really needed for a struct.
