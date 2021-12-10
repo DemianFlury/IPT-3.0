@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 //Defining a globally used struct, so it won't be newly declared everytime 
 //the "Game" function gets used
@@ -18,6 +19,7 @@ StruCard* AddCard(StruCard* pStart, StruCard* pNew);
 StruCard* CreateCard(const char* bez, int par1, double par2);
 void OutputList(StruCard* pStart);
 StruCard* ShuffleCards();
+int CoinFlip();
 
 
 
@@ -27,7 +29,6 @@ StruCard* ShuffleCards();
 
 int main()
 {
-  Game();
 
   //Defining [bool] array.
   int menuinput;
@@ -35,6 +36,7 @@ int main()
   printf("Hello Player!\nThis is the best unfinished \x22Quartett\x22\n");
   printf("Are you playing \x22Quartett\x22 for the first time?\nYes = 1, No = 2\n");
   scanf_s("%d", &menuinput);
+  int random = CoinFlip(2);
   if (menuinput == 1)
   {
     printf("The Rules of \x22Quartett\x22 are:\nYou get 5 cards from the deck at the start of the game.\n");
@@ -45,7 +47,10 @@ int main()
     printf("Then this stat gets compared to your opponents, if you bet right, you win the round and their card.\n");
     printf("These two cards go to the bottom of your bunch.\nThen your opponent gets to choose.\n");
     printf("The victor is decided by whom collets all the cards\n");
+    system("pause");
+    system("cls");
   }
+  Game();
   system("Pause");
 }
 
@@ -69,19 +74,15 @@ int Game()
 
   OutputList(pStart);
 
+  int StatChooser = CoinFlip(2);
+  if (StatChooser == 0){
+    
+  }
+  else if(StatChooser == 1){
+    
+  }
 
 
-  system("pause");
-  //strcpy(Card0->Bez, "Sheev Palpatine");
-  //strcpy(Card1->Bez, "Anakin Skywalker");
-  //strcpy(Card2->Bez, "Darth Vader");
-  //strcpy(Card3->Bez, "Obi-Wan Kenobi");
-  //strcpy(Card4->Bez, "Mace Windu");
-  //strcpy(Card5->Bez, "Darth Darth Binks");
-  //strcpy(Card6->Bez, "Yoda");
-  //strcpy(Card7->Bez, "Darth Maul");
-  //strcpy(Card8->Bez, "Chewbacca");
-  //strcpy(Card9->Bez, "Count Dooku");
   return 0;
 }
 
@@ -118,18 +119,10 @@ void OutputList(StruCard* pStart)
 
 StruCard* ShuffleCards()
 {
-
+    return 0;
 }
 
-
-
-
-//Note to Collaborator
-//Im still trying to figure out how structs work.
-//I have figured out that the name "Card" is not really needed for a struct.
-//Therefore the actual name of the struct is "StruCard"
-//But i think we do need the "Card" due to the "15: struct Card* pNext;".
-//Most likely due to the linked list that i kinda understand but not sure how in practice.
-
-
-
+int CoinFlip(int range) {
+    srand(time(NULL));
+    return (rand() % range);
+}
