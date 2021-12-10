@@ -18,8 +18,8 @@ int Game();
 StruCard* AddCard(StruCard* pStart, StruCard* pNew);
 StruCard* CreateCard(const char* bez, int par1, double par2);
 void OutputList(StruCard* pStart);
-StruCard* ShuffleCards();
-int CoinFlip();
+StruCard* ShuffleCards(StruCard* pStart);
+int Randomizer(int);
 
 
 
@@ -29,14 +29,13 @@ int CoinFlip();
 
 int main()
 {
-
   //Defining [bool] array.
   int menuinput;
   bool gameinputs[10];
   printf("Hello Player!\nThis is the best unfinished \x22Quartett\x22\n");
   printf("Are you playing \x22Quartett\x22 for the first time?\nYes = 1, No = 2\n");
   scanf_s("%d", &menuinput);
-  int random = CoinFlip(2);
+  int random = Randomizer(2);
   if (menuinput == 1)
   {
     printf("The Rules of \x22Quartett\x22 are:\nYou get 5 cards from the deck at the start of the game.\n");
@@ -60,6 +59,7 @@ int main()
 
 int Game()
 {
+  StruCard* pStartUser = NULL;
   StruCard* pStart = NULL;
   pStart = AddCard(pStart, CreateCard("Sheev Palpatine", 42, 63.6));
   pStart = AddCard(pStart, CreateCard("Anakin Skywalker", 40, 22.5));
@@ -71,15 +71,30 @@ int Game()
   pStart = AddCard(pStart, CreateCard("Darth Maul", 38, 35.3));
   pStart = AddCard(pStart, CreateCard("Chewbacca", 30, 181.9));
   pStart = AddCard(pStart, CreateCard("Count Dooku", 39, 83.2));
+  ShuffleCards(pStart);
 
-  OutputList(pStart);
-
-  int StatChooser = CoinFlip(2);
-  if (StatChooser == 0){
-    
+  int StatChooser = Randomizer(2);
+  if (StatChooser == 0)
+  {
+    if (pStart->fighting <= 30)
+    {
+     // lowerthan(pStart->fighting);
+    }
+    else
+    {
+     // greaterthan(pStart->fighting);
+    }
   }
-  else if(StatChooser == 1){
-    
+  else
+  {
+    if (pStart->age <= 50)
+    {
+      // lowerthan(pStart->age);
+    }
+    else
+    {
+      // greaterthan(pStart->age);
+    }
   }
 
 
@@ -117,12 +132,24 @@ void OutputList(StruCard* pStart)
     printf("Bez = %s\n", pTmp->Bez);
 }
 
-StruCard* ShuffleCards()
+StruCard* ShuffleCards(StruCard* pStart)
 {
-    return 0;
+  StruCard* 
+  for (int a = 0; a == 4; a++)
+  {
+    int a = Randomizer(99);
+    if (a == 0) a = 99;
+    for (int b = 0; a > b; b++)
+    {
+
+    }
+
+  }
+
+  return 0;
 }
 
-int CoinFlip(int range) {
+int Randomizer(int range) {
     srand(time(NULL));
     return (rand() % range);
 }
