@@ -13,7 +13,7 @@ typedef struct Card
   struct Card* pNext;
 } StruCard;
 
-//Defining the input parameters for the "Game" function
+//Defining the input parameters for the functions
 int Game();
 StruCard* AddCard(StruCard* pStart, StruCard* pNew);
 StruCard* CreateCard(const char* bez, int par1, double par2);
@@ -24,7 +24,7 @@ int Randomizer(int);
 
 
 //The "main" function will help us set what the game function does.
-//Therefore we will declare an [bool] array which is given to the "Game" function.
+//Therefore we will declare a [bool] array which is given to the "Game" function.
 //The "main" function is mostly used for menus which appear b4 the actual game.
 
 int main()
@@ -77,7 +77,7 @@ int Game()
   int StatChooser = Randomizer(2);
   if (StatChooser == 0)
   {
-    if (pStart->fighting <= 30)
+    if (pStart->fighting <= 40)
     {
      // lowerthan(pStart->fighting);
     }
@@ -149,7 +149,7 @@ StruCard* ShuffleCards(StruCard* pStart)
 
   //Shuffling Process begins.
   pTmp1 = pStart;
-  for (int a = 0; a <= 4; a++)
+  for (int a = 0; a < 5; a++)
   {
     //Randomizes where to take cards out in the deck.
     int b = Randomizer(10);
@@ -194,15 +194,17 @@ StruCard* ShuffleCards(StruCard* pStart)
   //TROUBLESHOOTING:
   //Doesn't yet result in 10 cards, the problem lies somewhere in between 167-185.
   //Prints first list.
+  printf("first list\n");
   while (pTmp1->pNext != NULL)
   {
-    printf("%s", pTmp1->Bez);
+    printf("%s \n", pTmp1->Bez);
     pTmp1 = pTmp1->pNext;
   }
   //Prints second list.
+  printf("\nsecond list\n");
   while (pTmp2->pNext != NULL)
   {
-    printf("%s", pTmp2->Bez);
+    printf("%s \n", pTmp2->Bez);
     pTmp2 = pTmp2->pNext;
   }
 
