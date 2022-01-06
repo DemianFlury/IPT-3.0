@@ -79,22 +79,22 @@ int Game()
   {
     if (pStart->fighting <= 40)
     {
-     // lowerthan(pStart->fighting);
+      //LesserThan(pStartP, pStart, 0);
     }
     else
     {
-     // greaterthan(pStart->fighting);
+      //GreaterThan(pStartP, pStart, 0);
     }
   }
   else
   {
     if (pStart->age <= 50)
     {
-      // lowerthan(pStart->age);
+      //LesserThan(pStartP, pStart, 1);
     }
     else
     {
-      // greaterthan(pStart->age);
+      //GreaterThan(pStartP, pStart, 1);
     }
   }
 
@@ -217,4 +217,50 @@ StruCard* ShuffleCards(StruCard* pStart)
 int Randomizer(int range) {
     srand(time(NULL));
     return (rand() % range);
+}
+
+bool GreaterThan(StruCard* LP, StruCard* CP, short stat)
+{
+  if (stat == 0)
+  {
+    if (LP->fighting > CP->fighting)
+    {
+      return true;
+    }
+    else
+      return false;
+
+  }
+  if (stat == 1)
+  {
+    if (LP->age > CP->age)
+    {
+      return true;
+    }
+    else
+      return false;
+  }
+}
+
+bool LesserThan(StruCard* LP, StruCard* CP, short stat)
+{
+  if (stat == 0)
+  {
+    if (LP->fighting < CP->fighting)
+    {
+      return true;
+    }
+    else
+      return false;
+
+  }
+  if (stat == 1)
+  {
+    if (LP->age < CP->age)
+    {
+      return true;
+    }
+    else
+      return false;
+  }
 }
