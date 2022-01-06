@@ -180,9 +180,12 @@ StruCard* ShuffleCards(StruCard* pStart)
         e = 1;
       }
       //The rest of the list.
+      else 
+      {
+        pTmp1->pNext = pStartP->pNext;
       pTmp2 = pTmp2->pNext;
-      pTmp1->pNext = pStartP->pNext;
-    }  
+      }
+    }
   }
   //Makes sure the end of the lists point to NULL so they can be properly finalised.
   pTmp2->pNext = NULL;
