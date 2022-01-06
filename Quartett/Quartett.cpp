@@ -38,6 +38,7 @@ int main()
   int random = Randomizer(2);
   if (menuinput == 1)
   {
+    gameinputs[0] = true; //Spieler hat das tutorial aufgerufen.
     printf("The Rules of \x22Quartett\x22 are:\nYou get 5 cards from the deck at the start of the game.\n");
     printf("You play with one opponent, who also draws 5 cards at the start.\nTherefore the deck contains 10 cards.\n");
     printf("You then take the card off of the top of your bunch, thats when the game begins.\n");
@@ -50,6 +51,7 @@ int main()
     system("cls");
   }
   Game();
+
   system("Pause");
 }
 
@@ -59,7 +61,6 @@ int main()
 
 int Game()
 {
-  StruCard* pStartUser = NULL;
   StruCard* pStart = NULL;
   pStart = AddCard(pStart, CreateCard("Sheev Palpatine", 42, 63.6));
   pStart = AddCard(pStart, CreateCard("Anakin Skywalker", 40, 22.5));
@@ -134,19 +135,78 @@ void OutputList(StruCard* pStart)
 
 StruCard* ShuffleCards(StruCard* pStart)
 {
-  StruCard* 
-  for (int a = 0; a == 4; a++)
+  int d = 0;
+  int e = 0;
+  StruCard* pStartP = NULL;
+  StruCard* pTmp1 = pStart;
+  StruCard* pTmp2 = NULL;
+  //Combines the end of the list to the start.
+  while (pTmp1->pNext != NULL)
   {
-    int a = Randomizer(99);
-    if (a == 0) a = 99;
-    for (int b = 0; a > b; b++)
+    pTmp1 = pTmp1->pNext;
+  }
+  pTmp1->pNext = pStart;
+
+  //Shuffling Process begins.
+  pTmp1 = pStart;
+  for (int a = 0; a <= 4; a++)
+  {
+    //Randomizes where to take cards out in the deck.
+    int b = Randomizer(10);
+    if (b == 0) b = 10;
+    for (int c = 0; b > c; c++)
     {
-
+      pTmp1 = pTmp1->pNext;
+      if (pTmp1 == pStart)
+      {
+        pStart = pStart->pNext;
+      }
     }
+    //Initializes the second list.
+    //First run through.
+    if (d == 0)
+    {
+      pStartP = pTmp1->pNext;
+      pTmp1->pNext = pStartP->pNext;
+      d = 1;
+    }
+    else
+    {
+      //Second run through.
+      if (e == 0)
+      {
+        pStartP->pNext = pTmp1->pNext;
+        pTmp2 = pStartP->pNext;
+        e = 1;
+      }
+      //The rest of the list.
+      pTmp2 = pTmp2->pNext;
+      pTmp1->pNext = pStartP->pNext;
+    }  
+  }
+  //Makes sure the end of the lists point to NULL so they can be properly finalised.
+  pTmp2->pNext = NULL;
+  pTmp1 = pTmp1->pNext;
+  pTmp1->pNext = NULL;
+  pTmp1 = pStart;
+  pTmp2 = pStartP;
 
+  //TROUBLESHOOTING:
+  //Doesn't yet result in 10 cards, the problem lies somewhere in between 167-185.
+  //Prints first list.
+  while (pTmp1->pNext != NULL)
+  {
+    printf("%s", pTmp1->Bez);
+    pTmp1 = pTmp1->pNext;
+  }
+  //Prints second list.
+  while (pTmp2->pNext != NULL)
+  {
+    printf("%s", pTmp2->Bez);
+    pTmp2 = pTmp2->pNext;
   }
 
-  return 0;
+  return pStartP;
 }
 
 int Randomizer(int range) {
