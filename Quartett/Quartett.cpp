@@ -20,6 +20,9 @@ StruCard* CreateCard(const char* bez, int par1, double par2);
 void OutputList(StruCard* pStart);
 StruCard* ShuffleCards(StruCard* pStart);
 int Randomizer(int);
+bool LesserThan(StruCard*, StruCard*,short);
+bool GreaterThan(StruCard*, StruCard*, short);
+
 
 
 
@@ -62,39 +65,39 @@ int main()
 int Game()
 {
   StruCard* pStart = NULL;
-  pStart = AddCard(pStart, CreateCard("Sheev Palpatine", 42, 63.6));
-  pStart = AddCard(pStart, CreateCard("Anakin Skywalker", 40, 22.5));
-  pStart = AddCard(pStart, CreateCard("Darth Vader", 42, 22.6));
-  pStart = AddCard(pStart, CreateCard("Obi-Wan Kenobi", 35, 38.1));
-  pStart = AddCard(pStart, CreateCard("Mace Windu", 43, 53.7));
-  pStart = AddCard(pStart, CreateCard("Jar Jar Binks", 25, 33.3));
-  pStart = AddCard(pStart, CreateCard("Yoda", 41, 877.0));
-  pStart = AddCard(pStart, CreateCard("Darth Maul", 38, 35.3));
-  pStart = AddCard(pStart, CreateCard("Chewbacca", 30, 181.9));
-  pStart = AddCard(pStart, CreateCard("Count Dooku", 39, 83.2));
-  ShuffleCards(pStart);
+  pStart = AddCard(pStart, CreateCard("Sheev Palpatine" , 41, 63.6));
+  pStart = AddCard(pStart, CreateCard("Anakin Skywalker", 39, 22.5));
+  pStart = AddCard(pStart, CreateCard("Darth Vader"     , 42, 22.6));
+  pStart = AddCard(pStart, CreateCard("Obi-Wan Kenobi"  , 35, 38.1));
+  pStart = AddCard(pStart, CreateCard("Mace Windu"      , 43, 53.7));
+  pStart = AddCard(pStart, CreateCard("Jar Jar Binks"   , 25, 33.3));
+  pStart = AddCard(pStart, CreateCard("Yoda"            , 40, 877.0));
+  pStart = AddCard(pStart, CreateCard("Darth Maul"      , 33, 35.3));
+  pStart = AddCard(pStart, CreateCard("Chewbacca"       , 30, 181.9));
+  pStart = AddCard(pStart, CreateCard("Count Dooku"     , 38, 83.2));
+  StruCard* pStartP = ShuffleCards(pStart);
 
   int StatChooser = Randomizer(2);
   if (StatChooser == 0)
   {
     if (pStart->fighting <= 40)
     {
-      //LesserThan(pStartP, pStart, 0);
+      LesserThan(pStartP, pStart, 0);
     }
     else
     {
-      //GreaterThan(pStartP, pStart, 0);
+      GreaterThan(pStartP, pStart, 0);
     }
   }
   else
   {
     if (pStart->age <= 50)
     {
-      //LesserThan(pStartP, pStart, 1);
+      LesserThan(pStartP, pStart, 1);
     }
     else
     {
-      //GreaterThan(pStartP, pStart, 1);
+      GreaterThan(pStartP, pStart, 1);
     }
   }
 
@@ -140,6 +143,7 @@ StruCard* ShuffleCards(StruCard* pStart)
   StruCard* pStartP = NULL;
   StruCard* pTmp1 = pStart;
   StruCard* pTmp2 = NULL;
+  StruCard* pPrev = NULL;
   //Combines the end of the list to the start.
   while (pTmp1->pNext != NULL)
   {
@@ -154,15 +158,37 @@ StruCard* ShuffleCards(StruCard* pStart)
     //Randomizes where to take cards out in the deck.
     int b = Randomizer(10);
     if (b == 0) b = 10;
-    for (int c = 0; b > c; c++)
+    for (int c = 0; b >= c; c++)
     {
       pTmp1 = pTmp1->pNext;
+      if (c != b)
+      {
+        pPrev = pTmp1;
+      }
       if (pTmp1 == pStart)
       {
         pStart = pStart->pNext;
       }
     }
     //Initializes the second list.
+    //Set start of Player List
+    if (d == 0) 
+    {
+      pStartP = pTmp1;
+      pTmp1 = pStartP->pNext;
+      pStartP->pNext = NULL;
+      pPrev->pNext = pTmp1;
+      d = 1;
+    }
+    else
+    {
+      pTmp2 = pStartP;
+      while (pTmp2->pNext != NULL) pTmp2 = pTmp2->pNext;
+      pTmp2->pNext = pTmp1;
+      pTmp1 = pTmp1->pNext;
+      pPrev->pNext = pTmp1;
+    }
+    /*
     //First run through.
     if (d == 0)
     {
@@ -186,6 +212,7 @@ StruCard* ShuffleCards(StruCard* pStart)
       pTmp2 = pTmp2->pNext;
       }
     }
+    */
   }
   //Makes sure the end of the lists point to NULL so they can be properly finalised.
   pTmp2->pNext = NULL;
