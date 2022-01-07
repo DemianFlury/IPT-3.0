@@ -135,80 +135,70 @@ void OutputList(StruCard* pStart)
 
 StruCard* ShuffleCards(StruCard* pStart)
 {
-  int d = 0;
-  int e = 0;
-  StruCard* pStartP = NULL;
-  StruCard* pTmp1 = pStart;
-  StruCard* pTmp2 = NULL;
-  //Combines the end of the list to the start.
-  while (pTmp1->pNext != NULL)
-  {
-    pTmp1 = pTmp1->pNext;
-  }
-  pTmp1->pNext = pStart;
+  StruCard* pSelection = pStart;
+  StruCard* pStartPlayer = NULL;
+  StruCard* pSelectionPlayer = NULL;
+  StruCard* pSavePlayer = NULL;
+  int RandomizerVar = 0;
 
-  //Shuffling Process begins.
-  pTmp1 = pStart;
-  for (int a = 0; a < 5; a++)
+  //Close the loop
+  while (pSelection->pNext != NULL)
   {
-    //Randomizes where to take cards out in the deck.
-    int b = Randomizer(10);
-    if (b == 0) b = 10;
-    for (int c = 0; b > c; c++)
+    pSelection = pSelection->pNext;
+  }
+  pSelection->pNext = pStart;
+
+  //Pick out 5 cards
+  for (int index = 0; index < 5; index++)
+  {
+    RandomizerVar = Randomizer(10);
+    if (RandomizerVar == 0)
+      RandomizerVar = 1;
+
+    for (int inindex = 0; inindex < RandomizerVar; inindex++)
     {
-      pTmp1 = pTmp1->pNext;
-      if (pTmp1 == pStart)
-      {
-        pStart = pStart->pNext;
-      }
+      pSelection = pSelection->pNext;
     }
-    //Initializes the second list.
-    //First run through.
-    if (d == 0)
+    //Random Card picked.
+    if (pSelection == pStart)
+      pStart = pSelection->pNext;
+    if (index == 0)
     {
-      pStartP = pTmp1->pNext;
-      pTmp1->pNext = pStartP->pNext;
-      d = 1;
+      pStartPlayer = pSelection->pNext;
+      pSelection->pNext = pStartPlayer->pNext;
+    }
+    else if (index == 1)
+    {
+      pStartPlayer->pNext = pSelection->pNext;
+      pSelectionPlayer = pStartPlayer->pNext;
+      pSelection->pNext = pSelectionPlayer->pNext;
     }
     else
     {
-      //Second run through.
-      if (e == 0)
-      {
-        pStartP->pNext = pTmp1->pNext;
-        pTmp2 = pStartP->pNext;
-        e = 1;
-      }
-      //The rest of the list.
-      pTmp2 = pTmp2->pNext;
-      pTmp1->pNext = pStartP->pNext;
-    }  
+      pSelectionPlayer->pNext = pSelection->pNext;
+      pSavePlayer = pSelectionPlayer->pNext;
+      pSelection->pNext = pSavePlayer->pNext;
+      pSelectionPlayer = pSavePlayer;
+    }
+    if (pSelection->pNext == pStart)
+    {
+      pStart = pSelection;
+    }
   }
-  //Makes sure the end of the lists point to NULL so they can be properly finalised.
-  pTmp2->pNext = NULL;
-  pTmp1 = pTmp1->pNext;
-  pTmp1->pNext = NULL;
-  pTmp1 = pStart;
-  pTmp2 = pStartP;
-
-  //TROUBLESHOOTING:
-  //Doesn't yet result in 10 cards, the problem lies somewhere in between 167-185.
-  //Prints first list.
-  printf("first list\n");
-  while (pTmp1->pNext != NULL)
+  while (pSelection->pNext != pStart)
   {
-    printf("%s \n", pTmp1->Bez);
-    pTmp1 = pTmp1->pNext;
+    pSelection = pSelection->pNext;
   }
-  //Prints second list.
-  printf("\nsecond list\n");
-  while (pTmp2->pNext != NULL)
+  pSelection->pNext = NULL;
+  pSelection = pStart;
+  printf("%s \n", pSelection->Bez);
+  while (pSelection->pNext != NULL)
   {
-    printf("%s \n", pTmp2->Bez);
-    pTmp2 = pTmp2->pNext;
+    pSelection = pSelection->pNext;
+    printf("%s \n", pSelection->Bez);
   }
 
-  return pStartP;
+  return 0;
 }
 
 int Randomizer(int range) {
