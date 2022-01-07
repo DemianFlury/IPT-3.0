@@ -120,7 +120,7 @@ int Game()
 StruCard* AddCard(StruCard* pStart, StruCard* pNew)
 {
   pNew->pNext = NULL;
-  if (pStart == NULL) { //Leere Liste
+  if (pStart == NULL) { //empty list
     pStart = pNew;
   }
   else {
@@ -378,4 +378,13 @@ int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL)
       }
     }
   }
+}
+
+void SwitchCards(StruCard* pSrc, StruCard* pDst)
+{
+  StruCard* pTmp = pSrc;
+  pSrc = pSrc->pNext;
+  while (pDst != NULL) pDst = pDst->pNext;
+  pDst->pNext = pTmp;
+  pTmp->pNext = NULL;
 }
