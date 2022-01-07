@@ -23,7 +23,7 @@ int Randomizer(int);
 int LesserThan(StruCard*, StruCard*,short);
 int GreaterThan(StruCard*, StruCard*, short);
 int AI(StruCard*, StruCard*);
-void PlayerMenuIG(StruCard*);
+int PlayerMenuIG(StruCard*, StruCard*, short);
 
 
 
@@ -83,7 +83,35 @@ int Game()
   StruCard** ListOfStarts = ShuffleCards(pStart);
   pStart = ListOfStarts[0];
   pStartPlayer = ListOfStarts[1];
-  
+  pPlayerCard = pStartPlayer;
+  pAICard = pStart;
+  bool PlayerTurn = true;
+  int PlayerResult = 0;
+  int AIResult = 0;
+  while (pPlayerCard != NULL || pAICard != NULL)
+  {
+    if (PlayerTurn == true)
+    {
+      int PlayerResult = PlayerMenuIG(pPlayerCard, pAICard, 0);
+      PlayerTurn == false;
+    }
+    else
+    {
+      int AIResult = AI(pAICard, pPlayerCard);
+      PlayerMenuIG(pPlayerCard, pAICard, AIResult);
+      PlayerTurn == true;
+    }
+    if (PlayerResult == 1 || AIResult == 0)
+    {
+      ("You won the round!");
+      system("pause");
+    }
+    else if (PlayerResult == 0 || AIResult == 1)
+    {
+      ("You lost this round...");
+      system("pause");
+    }
+  }
 
 
   return 0;
@@ -104,10 +132,10 @@ StruCard* AddCard(StruCard* pStart, StruCard* pNew)
 }
 
 
-StruCard* CreateCard(const char* bez, int par1, double par2)
+StruCard* CreateCard(const char* name, int par1, double par2)
 {
   StruCard* newCard = (StruCard*)malloc(sizeof(StruCard));
-  strcpy_s(newCard->name, 50, bez);
+  strcpy_s(newCard->name, 50, name);
   newCard->fighting = par1;
   newCard->age = par2;
   return newCard;
@@ -173,8 +201,6 @@ StruCard** ShuffleCards(StruCard* pStart)
   }
   pSelection->pNext = NULL;
   pSelectionPlayer->pNext = NULL;
-  OutputList(pStart);
-  OutputList(pStartPlayer);
 
   StruCard* Saves[2];
   Saves[0] = pStart;
@@ -240,34 +266,116 @@ int LesserThan(StruCard* LP, StruCard* CP, short stat)
 
 int AI(StruCard* AICard, StruCard* PlayerCard)
 {
+  int returncode = 0;
   int StatChooser = Randomizer(2);
   if (StatChooser == 0)
   {
     if (AICard->fighting <= 40)
     {
-      LesserThan(PlayerCard, AICard, 0);
+      returncode = LesserThan(PlayerCard, AICard, 0);
     }
     else
     {
-      GreaterThan(PlayerCard, AICard, 0);
+      returncode = GreaterThan(PlayerCard, AICard, 0);
     }
   }
   else
   {
     if (AICard->age <= 50)
     {
-      LesserThan(PlayerCard, AICard, 1);
+      returncode = LesserThan(PlayerCard, AICard, 1);
     }
     else
     {
-      GreaterThan(PlayerCard, AICard, 1);
+      returncode = GreaterThan(PlayerCard, AICard, 1);
     }
   }
+  return returncode;
 }
 
-void PlayerMenuIG(StruCard* PlayerCard)
+int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL)
 {
-  printf("\nITS YOUR TURN.");
-  printf("\nHere's your Card");
-  printf("\n\t\t%s", PlayerCard->name);
+  int tmpchoice = 0;
+  int choiceHL = 0;
+  int choiceST = 0;
+  if (AIHoL != 0)
+  {
+    printf("\nThe computer takes it's turn.");
+    switch (AIHoL)
+    {
+      case 1:
+      {
+        printf("\nThe Computer bets higher on age!");
+      }
+      case 2:
+      {
+        printf("\nThe Computer bets lower on age!");
+      }
+      case 3:
+      {
+        printf("\nThe Computer bets higher on fighting!");
+      }
+      case 4:
+      {
+        printf("\nThe Computer bets lower on fighting!");
+      }
+      default:
+      {
+        printf("Computer broken");
+      }
+    }
+  }
+  else
+  {
+    system("cls");
+    printf("\nITS YOUR TURN.");
+    printf("\nHere's your Card");
+    printf("\n\t%s", PlayerCard->name);
+    printf("\n\n\n");
+    printf("\t%lf", PlayerCard->age);
+    printf("\t%d", PlayerCard->fighting);
+    printf("\n\n\nWhich stat do you want to bet on?");
+    scanf_s("%d", &choiceHL);
+    if (choiceHL > 2 || choiceHL <= 0)
+    {
+      return 100;
+    }
+    printf("\nAre you betting higher or lower?");
+    scanf_s("%d", &choiceST);
+    if (choiceST > 2 || choiceST <= 0)
+    {
+      return 101;
+    }
+    switch (choiceST)
+    {
+      case 1:
+      {
+        if (choiceHL == 1)
+        {
+          GreaterThan(PlayerCard, AICard, 2);
+        }
+        else
+        {
+
+        }
+      }
+      case 2:
+      {
+        if (choiceHL == 1)
+        {
+
+        }
+        else
+        {
+
+        }
+      }
+      default:
+      {
+        printf("Computer broken...");
+        system("pause");
+        return 102;
+      }
+    }
+  }
 }
