@@ -7,7 +7,7 @@
 //the "Game" function gets used
 typedef struct Card
 {
-  char Bez[50];
+  char name[50];
   int fighting;
   double age;
   struct Card* pNext;
@@ -18,10 +18,12 @@ int Game();
 StruCard* AddCard(StruCard* pStart, StruCard* pNew);
 StruCard* CreateCard(const char* bez, int par1, double par2);
 void OutputList(StruCard* pStart);
-StruCard* ShuffleCards(StruCard* pStart);
+StruCard** ShuffleCards(StruCard* pStart);
 int Randomizer(int);
-bool LesserThan(StruCard*, StruCard*,short);
-bool GreaterThan(StruCard*, StruCard*, short);
+int LesserThan(StruCard*, StruCard*,short);
+int GreaterThan(StruCard*, StruCard*, short);
+int AI(StruCard*, StruCard*);
+void PlayerMenuIG(StruCard*);
 
 
 
@@ -64,7 +66,10 @@ int main()
 
 int Game()
 {
+  StruCard* pPlayerCard = NULL;
+  StruCard* pAICard = NULL;
   StruCard* pStart = NULL;
+  StruCard* pStartPlayer = NULL;
   pStart = AddCard(pStart, CreateCard("Sheev Palpatine" , 41, 63.6));
   pStart = AddCard(pStart, CreateCard("Anakin Skywalker", 39, 22.5));
   pStart = AddCard(pStart, CreateCard("Darth Vader"     , 42, 22.6));
@@ -75,31 +80,10 @@ int Game()
   pStart = AddCard(pStart, CreateCard("Darth Maul"      , 33, 35.3));
   pStart = AddCard(pStart, CreateCard("Chewbacca"       , 30, 181.9));
   pStart = AddCard(pStart, CreateCard("Count Dooku"     , 38, 83.2));
-  StruCard* pStartP = ShuffleCards(pStart);
-
-  int StatChooser = Randomizer(2);
-  if (StatChooser == 0)
-  {
-    if (pStart->fighting <= 40)
-    {
-      LesserThan(pStartP, pStart, 0);
-    }
-    else
-    {
-      GreaterThan(pStartP, pStart, 0);
-    }
-  }
-  else
-  {
-    if (pStart->age <= 50)
-    {
-      LesserThan(pStartP, pStart, 1);
-    }
-    else
-    {
-      GreaterThan(pStartP, pStart, 1);
-    }
-  }
+  StruCard** ListOfStarts = ShuffleCards(pStart);
+  pStart = ListOfStarts[0];
+  pStartPlayer = ListOfStarts[1];
+  
 
 
   return 0;
@@ -123,7 +107,7 @@ StruCard* AddCard(StruCard* pStart, StruCard* pNew)
 StruCard* CreateCard(const char* bez, int par1, double par2)
 {
   StruCard* newCard = (StruCard*)malloc(sizeof(StruCard));
-  strcpy_s(newCard->Bez, 50, bez);
+  strcpy_s(newCard->name, 50, bez);
   newCard->fighting = par1;
   newCard->age = par2;
   return newCard;
@@ -133,10 +117,10 @@ StruCard* CreateCard(const char* bez, int par1, double par2)
 void OutputList(StruCard* pStart)
 {
   for (StruCard* pTmp = pStart; pTmp != NULL; pTmp = pTmp->pNext)
-    printf("Bez = %s\n", pTmp->Bez);
+    printf("name = %s\n", pTmp->name);
 }
 
-StruCard* ShuffleCards(StruCard* pStart)
+StruCard** ShuffleCards(StruCard* pStart)
 {
   StruCard* pSelection = pStart;
   StruCard* pStartPlayer = NULL;
@@ -154,17 +138,16 @@ StruCard* ShuffleCards(StruCard* pStart)
   //Pick out 5 cards
   for (int index = 0; index < 5; index++)
   {
-    RandomizerVar = Randomizer(10);
-    if (RandomizerVar == 0)
-      RandomizerVar = 1;
 
     for (int inindex = 0; inindex < RandomizerVar; inindex++)
     {
       pSelection = pSelection->pNext;
     }
     //Random Card picked.
-    if (pSelection == pStart)
-      pStart = pSelection->pNext;
+    if (pSelection->pNext == pStart)
+    {
+      pStart = pSelection;
+    }
     if (index == 0)
     {
       pStartPlayer = pSelection->pNext;
@@ -183,25 +166,21 @@ StruCard* ShuffleCards(StruCard* pStart)
       pSelection->pNext = pSavePlayer->pNext;
       pSelectionPlayer = pSavePlayer;
     }
-    if (pSelection->pNext == pStart)
-    {
-      pStart = pSelection;
-    }
   }
   while (pSelection->pNext != pStart)
   {
     pSelection = pSelection->pNext;
   }
   pSelection->pNext = NULL;
-  pSelection = pStart;
-  printf("%s \n", pSelection->Bez);
-  while (pSelection->pNext != NULL)
-  {
-    pSelection = pSelection->pNext;
-    printf("%s \n", pSelection->Bez);
-  }
+  pSelectionPlayer->pNext = NULL;
+  OutputList(pStart);
+  OutputList(pStartPlayer);
 
-  return 0;
+  StruCard* Saves[2];
+  Saves[0] = pStart;
+  Saves[1] = pStartPlayer;
+  StruCard** Returnpointer = Saves;
+  return Returnpointer;
 }
 
 int Randomizer(int range) {
@@ -209,48 +188,86 @@ int Randomizer(int range) {
     return (rand() % range);
 }
 
-bool GreaterThan(StruCard* LP, StruCard* CP, short stat)
+int GreaterThan(StruCard* LP, StruCard* CP, short stat)
 {
   if (stat == 0)
   {
     if (LP->fighting > CP->fighting)
     {
-      return true;
+      return 0;
     }
     else
-      return false;
+      return 1;
 
   }
   if (stat == 1)
   {
     if (LP->age > CP->age)
     {
-      return true;
+      return 0;
     }
     else
-      return false;
+      return 1;
   }
+  else
+    return 99;
 }
 
-bool LesserThan(StruCard* LP, StruCard* CP, short stat)
+int LesserThan(StruCard* LP, StruCard* CP, short stat)
 {
   if (stat == 0)
   {
     if (LP->fighting < CP->fighting)
     {
-      return true;
+      return 0;
     }
     else
-      return false;
+      return 1;
 
   }
   if (stat == 1)
   {
     if (LP->age < CP->age)
     {
-      return true;
+      return 0;
     }
     else
-      return false;
+      return 1;
   }
+  else
+    return 99;
+}
+
+int AI(StruCard* AICard, StruCard* PlayerCard)
+{
+  int StatChooser = Randomizer(2);
+  if (StatChooser == 0)
+  {
+    if (AICard->fighting <= 40)
+    {
+      LesserThan(PlayerCard, AICard, 0);
+    }
+    else
+    {
+      GreaterThan(PlayerCard, AICard, 0);
+    }
+  }
+  else
+  {
+    if (AICard->age <= 50)
+    {
+      LesserThan(PlayerCard, AICard, 1);
+    }
+    else
+    {
+      GreaterThan(PlayerCard, AICard, 1);
+    }
+  }
+}
+
+void PlayerMenuIG(StruCard* PlayerCard)
+{
+  printf("\nITS YOUR TURN.");
+  printf("\nHere's your Card");
+  printf("\n\t\t%s", PlayerCard->name);
 }
