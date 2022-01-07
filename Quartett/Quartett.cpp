@@ -28,6 +28,7 @@ int PlayerMenuIG(StruCard*, StruCard*, short);
 
 
 
+
 //The "main" function will help us set what the game function does.
 //Therefore we will declare a [bool] array which is given to the "Game" function.
 //The "main" function is mostly used for menus which appear b4 the actual game.
@@ -66,10 +67,8 @@ int main()
 
 int Game()
 {
-  StruCard* pPlayerCard = NULL;
-  StruCard* pAICard = NULL;
-  StruCard* pStart = NULL;
   StruCard* pStartPlayer = NULL;
+  StruCard* pStart = NULL;
   pStart = AddCard(pStart, CreateCard("Sheev Palpatine" , 41, 63.6));
   pStart = AddCard(pStart, CreateCard("Anakin Skywalker", 39, 22.5));
   pStart = AddCard(pStart, CreateCard("Darth Vader"     , 42, 22.6));
@@ -83,37 +82,49 @@ int Game()
   StruCard** ListOfStarts = ShuffleCards(pStart);
   pStart = ListOfStarts[0];
   pStartPlayer = ListOfStarts[1];
-  pPlayerCard = pStartPlayer;
-  pAICard = pStart;
   bool PlayerTurn = true;
-  int PlayerResult = 0;
-  int AIResult = 0;
-  while (pPlayerCard != NULL || pAICard != NULL)
+  int Result = 0;
+  while (pStartPlayer != NULL || pStart != NULL)
   {
     if (PlayerTurn == true)
     {
-      int PlayerResult = PlayerMenuIG(pPlayerCard, pAICard, 0);
-      PlayerTurn == false;
+      Result = PlayerMenuIG(pStartPlayer, pStart, 0);
+      PlayerTurn = false;
     }
     else
     {
-      int AIResult = AI(pAICard, pPlayerCard);
-      PlayerMenuIG(pPlayerCard, pAICard, AIResult);
-      PlayerTurn == true;
+      Result = AI(pStart, pStartPlayer);
+      PlayerMenuIG(pStartPlayer, pStart, Result);
+      PlayerTurn = true;
     }
-    if (PlayerResult == 1 || AIResult == 0)
+    if (Result == 0)
     {
-      ("You won the round!");
+      StruCard* pTmp = pStart;
+      StruCard* pTmp2 = pStartPlayer;
+      pStart = pStart->pNext;
+      while (pStartPlayer->pNext != NULL) 
+        pStartPlayer = pStartPlayer->pNext;
+      pStartPlayer->pNext = pTmp;
+      pStartPlayer = pTmp2;
+      pTmp->pNext = NULL;
+
+      printf("\nYou won the round!");
       system("pause");
     }
-    else if (PlayerResult == 0 || AIResult == 1)
+    else if (Result == 1)
     {
-      ("You lost this round...");
+      StruCard* pTmp = pStartPlayer;
+      StruCard* pTmp2 = pStart;
+      pStartPlayer = pStartPlayer->pNext;
+      while (pStart->pNext != NULL) 
+        pStart = pStart->pNext;
+      pStart->pNext = pTmp;
+      pStart = pTmp2;
+      pTmp->pNext = NULL;
+      printf("\nYou lost this round...");
       system("pause");
     }
   }
-
-
   return 0;
 }
 
@@ -166,7 +177,9 @@ StruCard** ShuffleCards(StruCard* pStart)
   //Pick out 5 cards
   for (int index = 0; index < 5; index++)
   {
-
+    //RandomizerVar = Randomizer(10);
+    //if (RandomizerVar == 0)
+    //  RandomizerVar = 10;
     for (int inindex = 0; inindex < RandomizerVar; inindex++)
     {
       pSelection = pSelection->pNext;
@@ -306,22 +319,27 @@ int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL)
       case 1:
       {
         printf("\nThe Computer bets higher on age!");
+        break;
       }
       case 2:
       {
         printf("\nThe Computer bets lower on age!");
+        break;
       }
       case 3:
       {
         printf("\nThe Computer bets higher on fighting!");
+        break;
       }
       case 4:
       {
         printf("\nThe Computer bets lower on fighting!");
+        break;
       }
       default:
       {
         printf("Computer broken");
+        break;
       }
     }
   }
@@ -352,23 +370,25 @@ int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL)
       {
         if (choiceHL == 1)
         {
-          GreaterThan(PlayerCard, AICard, 2);
+          return GreaterThan(PlayerCard, AICard, 1);
         }
         else
         {
-
+          return GreaterThan(PlayerCard, AICard, 0);
         }
+        break;
       }
       case 2:
       {
         if (choiceHL == 1)
         {
-
+          return LesserThan(PlayerCard, AICard, 1);
         }
         else
         {
-
+          return LesserThan(PlayerCard, AICard, 0);
         }
+        break;
       }
       default:
       {
@@ -380,11 +400,3 @@ int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL)
   }
 }
 
-void SwitchCards(StruCard* pSrc, StruCard* pDst)
-{
-  StruCard* pTmp = pSrc;
-  pSrc = pSrc->pNext;
-  while (pDst != NULL) pDst = pDst->pNext;
-  pDst->pNext = pTmp;
-  pTmp->pNext = NULL;
-}
