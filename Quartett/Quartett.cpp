@@ -99,30 +99,44 @@ int Game()
     }
     if (Result == 0)
     {
+      //First card of the computer gets added to player's list
+      //and player's first card gets put to the end if its list.
+      StruCard* pEnd = pStartPlayer;
       StruCard* pTmp = pStart;
-      StruCard* pTmp2 = pStartPlayer;
       pStart = pStart->pNext;
-      while (pStartPlayer->pNext != NULL) 
-        pStartPlayer = pStartPlayer->pNext;
-      pStartPlayer->pNext = pTmp;
-      pStartPlayer = pTmp2;
+      pStartPlayer = pStartPlayer->pNext;
+      pEnd->pNext = pTmp;
       pTmp->pNext = NULL;
+      pTmp = pEnd;
+      pEnd = pStartPlayer;
+      while (pEnd->pNext != NULL)
+        pEnd = pEnd->pNext;
+      pEnd->pNext = pTmp;
 
-      printf("\nYou won the round!");
+      printf("\nYou won the round!\n");
       system("pause");
+      system("cls");
     }
     else if (Result == 1)
     {
+      //First card of the player gets added to computer's list
+      //and computer's first card gets put to the end if its list.
+      StruCard* pEnd = pStart;
       StruCard* pTmp = pStartPlayer;
-      StruCard* pTmp2 = pStart;
+      pStart = pStart->pNext;
       pStartPlayer = pStartPlayer->pNext;
-      while (pStart->pNext != NULL) 
-        pStart = pStart->pNext;
-      pStart->pNext = pTmp;
-      pStart = pTmp2;
+      pEnd->pNext = pTmp;
       pTmp->pNext = NULL;
-      printf("\nYou lost this round...");
+      pTmp = pEnd;
+      pEnd = pStartPlayer;
+      while (pEnd->pNext != NULL)
+        pEnd = pEnd->pNext;
+      pEnd->pNext = pTmp;
+
+
+      printf("\nYou lost this round...\n");
       system("pause");
+      system("cls");
     }
   }
   return 0;
@@ -156,7 +170,7 @@ StruCard* CreateCard(const char* name, int par1, double par2)
 void OutputList(StruCard* pStart)
 {
   for (StruCard* pTmp = pStart; pTmp != NULL; pTmp = pTmp->pNext)
-    printf("name = %s\n", pTmp->name);
+    printf("Name = %s\n", pTmp->name);
 }
 
 StruCard** ShuffleCards(StruCard* pStart)
@@ -177,9 +191,9 @@ StruCard** ShuffleCards(StruCard* pStart)
   //Pick out 5 cards
   for (int index = 0; index < 5; index++)
   {
-    //RandomizerVar = Randomizer(10);
-    //if (RandomizerVar == 0)
-    //  RandomizerVar = 10;
+    RandomizerVar = Randomizer(10);
+    if (RandomizerVar == 0)
+      RandomizerVar = 10;
     for (int inindex = 0; inindex < RandomizerVar; inindex++)
     {
       pSelection = pSelection->pNext;
@@ -229,7 +243,7 @@ int Randomizer(int range) {
 
 int GreaterThan(StruCard* LP, StruCard* CP, short stat)
 {
-  if (stat == 0)
+  if (stat == 1)
   {
     if (LP->fighting > CP->fighting)
     {
@@ -239,7 +253,7 @@ int GreaterThan(StruCard* LP, StruCard* CP, short stat)
       return 1;
 
   }
-  if (stat == 1)
+  if (stat == 0)
   {
     if (LP->age > CP->age)
     {
@@ -308,37 +322,36 @@ int AI(StruCard* AICard, StruCard* PlayerCard)
 
 int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL)
 {
-  int tmpchoice = 0;
   int choiceHL = 0;
   int choiceST = 0;
   if (AIHoL != 0)
   {
-    printf("\nThe computer takes it's turn.");
+    printf("\nThe computer takes it's turn.\n");
     switch (AIHoL)
     {
       case 1:
       {
-        printf("\nThe Computer bets higher on age!");
+        printf("\nThe Computer bets higher on age!\n");
         break;
       }
       case 2:
       {
-        printf("\nThe Computer bets lower on age!");
+        printf("\nThe Computer bets lower on age!\n");
         break;
       }
       case 3:
       {
-        printf("\nThe Computer bets higher on fighting!");
+        printf("\nThe Computer bets higher on fighting!\n");
         break;
       }
       case 4:
       {
-        printf("\nThe Computer bets lower on fighting!");
+        printf("\nThe Computer bets lower on fighting!\n");
         break;
       }
       default:
       {
-        printf("Computer broken");
+        printf("Computer broken\n");
         break;
       }
     }
@@ -348,21 +361,25 @@ int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL)
     system("cls");
     printf("\nITS YOUR TURN.");
     printf("\nHere's your Card");
-    printf("\n\t%s", PlayerCard->name);
-    printf("\n\n\n");
-    printf("\t%lf", PlayerCard->age);
-    printf("\t%d", PlayerCard->fighting);
-    printf("\n\n\nWhich stat do you want to bet on?");
+    printf("\n\nName = \t\t%s", PlayerCard->name);
+    printf("\n\n");
+    printf("Age =\t\t%.1lf \t[1]", PlayerCard->age);
+    printf("\nFighting =\t%d \t[2]", PlayerCard->fighting);
+    printf("\n\nWhich stat do you want to bet on? \n");
+    wronginputST:
+    scanf_s("%d", &choiceST);
+    if (choiceST > 2 || choiceST < 1)
+    {
+      printf("please input [1] or [2] ");
+      goto wronginputST;
+    }
+    printf("\nAre you betting higher [1] or lower [2] ?\n");
+    wronginputHL:
     scanf_s("%d", &choiceHL);
     if (choiceHL > 2 || choiceHL <= 0)
     {
-      return 100;
-    }
-    printf("\nAre you betting higher or lower?");
-    scanf_s("%d", &choiceST);
-    if (choiceST > 2 || choiceST <= 0)
-    {
-      return 101;
+      printf("please input [1] or [2] ");
+      goto wronginputHL;
     }
     switch (choiceST)
     {
@@ -374,7 +391,7 @@ int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL)
         }
         else
         {
-          return GreaterThan(PlayerCard, AICard, 0);
+          return LesserThan(PlayerCard, AICard, 1);
         }
         break;
       }
@@ -382,7 +399,7 @@ int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL)
       {
         if (choiceHL == 1)
         {
-          return LesserThan(PlayerCard, AICard, 1);
+          return GreaterThan(PlayerCard, AICard, 0);
         }
         else
         {
