@@ -33,6 +33,7 @@ int PlayerMenuIG(StruCard*, StruCard*, short);
 //Therefore we will declare a [bool] array which is given to the "Game" function.
 //The "main" function is mostly used for menus which appear b4 the actual game.
 
+//Marvin
 int main()
 {
   //Defining [bool] array.
@@ -46,12 +47,11 @@ int main()
   {
     gameinputs[0] = true; //Spieler hat das tutorial aufgerufen.
     printf("The Rules of \x22Quartett\x22 are:\nYou get 5 cards from the deck at the start of the game.\n");
-    printf("You play with one opponent, who also draws 5 cards at the start.\nTherefore the deck contains 10 cards.\n");
+    printf("You play with one opponent, who also draws 5 cards at the start, therefore the deck contains 10 cards.\n");
     printf("You then take the card off of the top of your bunch, thats when the game begins.\n");
-    printf("A coinflip decides if you or your opponent starts with choosing stats.\n");
-    printf("If you win the coinflip you choose either one of your stats of the card and decide if you bet higher or lower.\n");
+    printf("When it is your turn, you choose either one of your stats of the card and decide if you bet higher or lower.\n");
     printf("Then this stat gets compared to your opponents, if you bet right, you win the round and their card.\n");
-    printf("These two cards go to the bottom of your bunch.\nThen your opponent gets to choose.\n");
+    printf("These two cards go to the bottom of your bunch. Then your opponent gets to choose.\n");
     printf("The victor is decided by whom collets all the cards\n");
     system("pause");
     system("cls");
@@ -61,10 +61,10 @@ int main()
   system("Pause");
 }
 
+//Demian
 //The "Game" function is the function which will handle 
-//generating the cards, declaring players, handing the cards out to the players 
-//and resetting itself with the input values given by the "main function".
-
+//generating the cards, defining whose turn it is, starting other 
+//functions and handing cards back and forth to the winner of each round.
 int Game()
 {
   StruCard* pStartPlayer = NULL;
@@ -91,7 +91,7 @@ int Game()
       Result = PlayerMenuIG(pStartPlayer, pStart, 0);
       PlayerTurn = false;
     }
-    else
+    else if(PlayerTurn == false)
     {
       Result = AI(pStart, pStartPlayer);
       PlayerMenuIG(pStartPlayer, pStart, Result);
@@ -142,6 +142,7 @@ int Game()
   return 0;
 }
 
+//Demian
 StruCard* AddCard(StruCard* pStart, StruCard* pNew)
 {
   pNew->pNext = NULL;
@@ -156,7 +157,7 @@ StruCard* AddCard(StruCard* pStart, StruCard* pNew)
   return pStart;
 }
 
-
+//Demian
 StruCard* CreateCard(const char* name, int par1, double par2)
 {
   StruCard* newCard = (StruCard*)malloc(sizeof(StruCard));
@@ -166,13 +167,14 @@ StruCard* CreateCard(const char* name, int par1, double par2)
   return newCard;
 }
 
-
+//Demian
 void OutputList(StruCard* pStart)
 {
   for (StruCard* pTmp = pStart; pTmp != NULL; pTmp = pTmp->pNext)
     printf("Name = %s\n", pTmp->name);
 }
 
+//Both, Marvin's approach was more compact so we used his
 StruCard** ShuffleCards(StruCard* pStart)
 {
   StruCard* pSelection = pStart;
@@ -181,7 +183,7 @@ StruCard** ShuffleCards(StruCard* pStart)
   StruCard* pSavePlayer = NULL;
   int RandomizerVar = 0;
 
-  //Close the loop
+  //Attach the last element of the list to the first
   while (pSelection->pNext != NULL)
   {
     pSelection = pSelection->pNext;
@@ -203,17 +205,20 @@ StruCard** ShuffleCards(StruCard* pStart)
     {
       pStart = pSelection;
     }
+    //first iteration
     if (index == 0)
     {
       pStartPlayer = pSelection->pNext;
       pSelection->pNext = pStartPlayer->pNext;
     }
+    //second iteration
     else if (index == 1)
     {
       pStartPlayer->pNext = pSelection->pNext;
       pSelectionPlayer = pStartPlayer->pNext;
       pSelection->pNext = pSelectionPlayer->pNext;
     }
+    //third to fifth iteration
     else
     {
       pSelectionPlayer->pNext = pSelection->pNext;
@@ -228,7 +233,13 @@ StruCard** ShuffleCards(StruCard* pStart)
   }
   pSelection->pNext = NULL;
   pSelectionPlayer->pNext = NULL;
+  OutputList(pStart);
+  printf("\n\n");
+  OutputList(pStartPlayer);
+  printf("\n\n");
+  system("pause");
 
+  //return both starts of the list with a pointer array
   StruCard* Saves[2];
   Saves[0] = pStart;
   Saves[1] = pStartPlayer;
@@ -236,14 +247,18 @@ StruCard** ShuffleCards(StruCard* pStart)
   return Returnpointer;
 }
 
-int Randomizer(int range) {
-    srand(time(NULL));
-    return (rand() % range);
+//Demian
+int Randomizer(int range) 
+{
+  srand(time(NULL));
+  return (rand() % range);
 }
 
+//Marvin
+//Player chose greater than
 int GreaterThan(StruCard* LP, StruCard* CP, short stat)
 {
-  if (stat == 1)
+  if (stat == 0)
   {
     if (LP->fighting > CP->fighting)
     {
@@ -253,7 +268,7 @@ int GreaterThan(StruCard* LP, StruCard* CP, short stat)
       return 1;
 
   }
-  if (stat == 0)
+  if (stat == 1)
   {
     if (LP->age > CP->age)
     {
@@ -266,6 +281,8 @@ int GreaterThan(StruCard* LP, StruCard* CP, short stat)
     return 99;
 }
 
+//Marvin
+//Player chose lesser than
 int LesserThan(StruCard* LP, StruCard* CP, short stat)
 {
   if (stat == 0)
@@ -291,6 +308,11 @@ int LesserThan(StruCard* LP, StruCard* CP, short stat)
     return 99;
 }
 
+//Marvin
+//The Coputer choses the stat to play randomly
+//if he choses the fighting stat it looks if its higher or 
+//lower than 40 and then choses to play higher or lower
+//the age threshold is at 50 Years.
 int AI(StruCard* AICard, StruCard* PlayerCard)
 {
   int returncode = 0;
@@ -320,6 +342,11 @@ int AI(StruCard* AICard, StruCard* PlayerCard)
   return returncode;
 }
 
+//Marvin
+//This is the function that communicates with the player.
+//It outputs the Computer's moves and takes the inputs of the player
+//It also starts the comparison and returns the result,
+//if the computer or player won or lost.
 int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL)
 {
   int choiceHL = 0;
