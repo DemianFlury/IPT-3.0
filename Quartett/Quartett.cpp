@@ -38,14 +38,11 @@ int main()
 {
   //Defining [bool] array.
   int menuinput;
-  bool gameinputs[10];
   printf("Hello Player!\nThis is the best unfinished \x22Quartett\x22\n");
   printf("Are you playing \x22Quartett\x22 for the first time?\nYes = [1], No = [2]\n");
   scanf_s("%d", &menuinput);
-  int random = Randomizer(2);
   if (menuinput == 1)
   {
-    gameinputs[0] = true; //Player has opened tutorial.
     printf("The Rules of \x22Quartett\x22 are:\nYou get 5 cards from the deck at the start of the game.\n");
     printf("You play with one opponent, who also draws 5 cards at the start, therefore the deck contains 10 cards.\n");
     printf("You then take the card off of the top of your bunch, thats when the game begins.\n");
@@ -56,8 +53,13 @@ int main()
     system("pause");
     system("cls");
   }
-  Game();
+  int again = 1;
+  while (again == 1)
+  {
+    again = Game();
+  }
 
+  printf("\nThank you for playing!\n");
   system("Pause");
 }
 
@@ -84,7 +86,7 @@ int Game()
   pStartPlayer = ListOfStarts[1];
   bool PlayerTurn = true;
   int Result = 0;
-  while (pStartPlayer != NULL || pStart != NULL)
+  while (pStartPlayer != NULL && pStart != NULL)
   {
     if (PlayerTurn == true)
     {
@@ -94,13 +96,12 @@ int Game()
     else if (PlayerTurn == false)
     {
       Result = AI(pStart, pStartPlayer);
-      PlayerMenuIG(pStartPlayer, pStart, Result, PlayerTurn);
       PlayerTurn = true;
     }
     if (Result == 0)
     {
-      //First card of the player gets added to computer's list
-      //and computer's first card gets put to the end if its list.
+      //First card of the computer gets added to player's list
+      //and player's first card gets put to the end if its list.
       StruCard* pEnd = pStart;
       StruCard* pTmp = pStartPlayer;
       pStart = pStart->pNext;
@@ -119,8 +120,8 @@ int Game()
     }
     else if (Result == 1)
     {
-      //First card of the computer gets added to player's list
-      //and player's first card gets put to the end if its list.
+      //First card of the player gets added to computer's list
+      //and computer's first card gets put to the end if its list.
       StruCard* pEnd = pStartPlayer;
       StruCard* pTmp = pStart;
       pStart = pStart->pNext;
@@ -140,13 +141,19 @@ int Game()
     }
   }
   if (pStart == NULL)
-    printf("You win the Game!");
+    printf("Congratulations, you win the Game!\n");
 
   else if (pStartPlayer == NULL)
-    printf("You lose the Game.");
+    printf("You lose the Game\n.");
 
-  else
-    printf("computer broken");
+
+  printf("Do you want to play again? Yes = [1] No = [2]\n");
+  int again;
+  scanf_s("%i", &again);
+  if (again == 1)
+  {
+    return 1;
+  }
   return 0;
 }
 
@@ -201,8 +208,8 @@ StruCard** ShuffleCards(StruCard* pStart)
   //Pick out 5 cards
   for (int index = 0; index < 5; index++)
   {
-    RandomizerVar = Randomizer(10);
-    if (RandomizerVar == 0)
+    //RandomizerVar = Randomizer(10);
+    //if (RandomizerVar == 0)
       RandomizerVar = 10;
     for (int inindex = 0; inindex < RandomizerVar; inindex++)
     {
@@ -319,80 +326,51 @@ int LesserThan(StruCard* LP, StruCard* CP, short stat)
 //Marvin
 //The Coputer choses the stat to play randomly
 //if he choses the fighting stat it looks if its higher or 
-//lower than 40 and then choses to play higher or lower
-//the age threshold is at 50 Years.
+//lower than 40 and then choses to play higher or lower.
+//The age threshold is at 50 Years.
 int AI(StruCard* AICard, StruCard* PlayerCard)
 {
   int returncode = 0;
   int StatChooser = Randomizer(2);
+
+  printf("\nThe computer takes it's turn.\n");
+
   if (StatChooser == 0)
   {
     if (AICard->fighting <= 40)
     {
-      returncode = LesserThan(PlayerCard, AICard, 0);
+      returncode = LesserThan(PlayerCard, AICard, StatChooser);
+      printf("\nThe Computer bets lower on fighting!\n");
     }
     else
     {
-      returncode = GreaterThan(PlayerCard, AICard, 0);
+      returncode = GreaterThan(PlayerCard, AICard, StatChooser);
+      printf("\nThe Computer bets higher on fighting!\n");
     }
   }
   else
   {
     if (AICard->age <= 50)
     {
-      returncode = LesserThan(PlayerCard, AICard, 1);
+      returncode = LesserThan(PlayerCard, AICard, StatChooser);
+      printf("\nThe Computer bets lower on age!\n");
     }
     else
     {
-      returncode = GreaterThan(PlayerCard, AICard, 1);
+      returncode = GreaterThan(PlayerCard, AICard, StatChooser);
+      printf("\nThe Computer bets higher on age!\n");
     }
   }
   return returncode;
 }
 
 //Marvin
-//This is the function that communicates with the player.
-//It outputs the Computer's moves and takes the inputs of the player
-//It also starts the comparison and returns the result,
-//if the computer or player won or lost.
+//This is the function that communicates with the player and takes their input.
+//It also starts the comparison if it is the player's turn.
 int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL, bool turn)
 {
   int choiceHL = 0;
   int choiceST = 0;
-  if (turn == false)
-  {
-    printf("\nThe computer takes it's turn.\n");
-    switch (AIHoL)
-    {
-      case 1:
-      {
-        printf("\nThe Computer bets higher on age!\n");
-        break;
-      }
-      case 2:
-      {
-        printf("\nThe Computer bets lower on age!\n");
-        break;
-      }
-      case 3:
-      {
-        printf("\nThe Computer bets higher on fighting!\n");
-        break;
-      }
-      case 4:
-      {
-        printf("\nThe Computer bets lower on fighting!\n");
-        break;
-      }
-      default:
-      {
-        printf("Computer broken\n");
-        break;
-      }
-    }
-  }
-  else
-  {
     system("cls");
     printf("\nITS YOUR TURN.");
     printf("\nHere's your Card");
@@ -450,5 +428,5 @@ int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL, bool turn)
       }
     }
   }
-}
+
 
