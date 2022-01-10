@@ -23,7 +23,7 @@ int Randomizer(int);
 int LesserThan(StruCard*, StruCard*,short);
 int GreaterThan(StruCard*, StruCard*, short);
 int AI(StruCard*, StruCard*);
-int PlayerMenuIG(StruCard*, StruCard*, short);
+int PlayerMenuIG(StruCard*, StruCard*, short, bool);
 
 
 
@@ -40,12 +40,12 @@ int main()
   int menuinput;
   bool gameinputs[10];
   printf("Hello Player!\nThis is the best unfinished \x22Quartett\x22\n");
-  printf("Are you playing \x22Quartett\x22 for the first time?\nYes = 1, No = 2\n");
+  printf("Are you playing \x22Quartett\x22 for the first time?\nYes = [1], No = [2]\n");
   scanf_s("%d", &menuinput);
   int random = Randomizer(2);
   if (menuinput == 1)
   {
-    gameinputs[0] = true; //Spieler hat das tutorial aufgerufen.
+    gameinputs[0] = true; //Player has opened tutorial.
     printf("The Rules of \x22Quartett\x22 are:\nYou get 5 cards from the deck at the start of the game.\n");
     printf("You play with one opponent, who also draws 5 cards at the start, therefore the deck contains 10 cards.\n");
     printf("You then take the card off of the top of your bunch, thats when the game begins.\n");
@@ -69,16 +69,16 @@ int Game()
 {
   StruCard* pStartPlayer = NULL;
   StruCard* pStart = NULL;
-  pStart = AddCard(pStart, CreateCard("Sheev Palpatine" , 41, 63.6));
+  pStart = AddCard(pStart, CreateCard("Sheev Palpatine", 41, 63.6));
   pStart = AddCard(pStart, CreateCard("Anakin Skywalker", 39, 22.5));
-  pStart = AddCard(pStart, CreateCard("Darth Vader"     , 42, 22.6));
-  pStart = AddCard(pStart, CreateCard("Obi-Wan Kenobi"  , 35, 38.1));
-  pStart = AddCard(pStart, CreateCard("Mace Windu"      , 43, 53.7));
-  pStart = AddCard(pStart, CreateCard("Jar Jar Binks"   , 25, 33.3));
-  pStart = AddCard(pStart, CreateCard("Yoda"            , 40, 877.0));
-  pStart = AddCard(pStart, CreateCard("Darth Maul"      , 33, 35.3));
-  pStart = AddCard(pStart, CreateCard("Chewbacca"       , 30, 181.9));
-  pStart = AddCard(pStart, CreateCard("Count Dooku"     , 38, 83.2));
+  pStart = AddCard(pStart, CreateCard("Darth Vader", 42, 22.6));
+  pStart = AddCard(pStart, CreateCard("Obi-Wan Kenobi", 35, 38.1));
+  pStart = AddCard(pStart, CreateCard("Mace Windu", 43, 53.7));
+  pStart = AddCard(pStart, CreateCard("Jar Jar Binks", 25, 33.3));
+  pStart = AddCard(pStart, CreateCard("Yoda", 40, 877.0));
+  pStart = AddCard(pStart, CreateCard("Darth Maul", 33, 35.3));
+  pStart = AddCard(pStart, CreateCard("Chewbacca", 30, 181.9));
+  pStart = AddCard(pStart, CreateCard("Count Dooku", 38, 83.2));
   StruCard** ListOfStarts = ShuffleCards(pStart);
   pStart = ListOfStarts[0];
   pStartPlayer = ListOfStarts[1];
@@ -88,21 +88,21 @@ int Game()
   {
     if (PlayerTurn == true)
     {
-      Result = PlayerMenuIG(pStartPlayer, pStart, 0);
+      Result = PlayerMenuIG(pStartPlayer, pStart, 0, PlayerTurn);
       PlayerTurn = false;
     }
-    else if(PlayerTurn == false)
+    else if (PlayerTurn == false)
     {
       Result = AI(pStart, pStartPlayer);
-      PlayerMenuIG(pStartPlayer, pStart, Result);
+      PlayerMenuIG(pStartPlayer, pStart, Result, PlayerTurn);
       PlayerTurn = true;
     }
     if (Result == 0)
     {
-      //First card of the computer gets added to player's list
-      //and player's first card gets put to the end if its list.
-      StruCard* pEnd = pStartPlayer;
-      StruCard* pTmp = pStart;
+      //First card of the player gets added to computer's list
+      //and computer's first card gets put to the end if its list.
+      StruCard* pEnd = pStart;
+      StruCard* pTmp = pStartPlayer;
       pStart = pStart->pNext;
       pStartPlayer = pStartPlayer->pNext;
       pEnd->pNext = pTmp;
@@ -119,10 +119,10 @@ int Game()
     }
     else if (Result == 1)
     {
-      //First card of the player gets added to computer's list
-      //and computer's first card gets put to the end if its list.
-      StruCard* pEnd = pStart;
-      StruCard* pTmp = pStartPlayer;
+      //First card of the computer gets added to player's list
+      //and player's first card gets put to the end if its list.
+      StruCard* pEnd = pStartPlayer;
+      StruCard* pTmp = pStart;
       pStart = pStart->pNext;
       pStartPlayer = pStartPlayer->pNext;
       pEnd->pNext = pTmp;
@@ -139,6 +139,14 @@ int Game()
       system("cls");
     }
   }
+  if (pStart == NULL)
+    printf("You win the Game!");
+
+  else if (pStartPlayer == NULL)
+    printf("You lose the Game.");
+
+  else
+    printf("computer broken");
   return 0;
 }
 
@@ -347,11 +355,11 @@ int AI(StruCard* AICard, StruCard* PlayerCard)
 //It outputs the Computer's moves and takes the inputs of the player
 //It also starts the comparison and returns the result,
 //if the computer or player won or lost.
-int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL)
+int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL, bool turn)
 {
   int choiceHL = 0;
   int choiceST = 0;
-  if (AIHoL != 0)
+  if (turn == false)
   {
     printf("\nThe computer takes it's turn.\n");
     switch (AIHoL)
