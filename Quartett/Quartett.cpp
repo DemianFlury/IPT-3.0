@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <Windows.h>
+#include <utility>
 
 //Defining a globally used struct, so it won't be newly declared everytime 
 //the "Game" function gets used
@@ -15,7 +16,7 @@ typedef struct Card
 } StruCard;
 
 //Defining the input parameters for the functions
-int Game();
+int Game(int);
 StruCard* AddCard(StruCard* pStart, StruCard* pNew);
 StruCard* CreateCard(const char* bez, int par1, double par2);
 void OutputList(StruCard* pStart);
@@ -24,7 +25,9 @@ int Randomizer(int);
 int LesserThan(StruCard*, StruCard*,short);
 int GreaterThan(StruCard*, StruCard*, short);
 int AI(StruCard*, StruCard*);
+int DumbAI(StruCard*, StruCard*);
 int PlayerMenuIG(StruCard*, StruCard*, short, bool);
+int CardCounter(StruCard*);
 
 
 
@@ -33,8 +36,8 @@ int PlayerMenuIG(StruCard*, StruCard*, short, bool);
 //The "main" function is mostly used for menus which appear b4 the actual game.
 int main()
 {
-  //Defining [bool] array.
   int menuinput;
+  int menuinputdifficulty;
   printf("Hello Player!\nThis is the best \x22Star Wars Quartett\x22\n");
   printf("Are you playing for the first time?\nYes = [1], No = [2]\n");
   scanf_s("%d", &menuinput);
@@ -50,12 +53,37 @@ int main()
     system("pause");
     system("cls");
   }
+  difficultyselection:
+  system("cls");
+  printf("Do you want to play HARD[1] or easy[2] difficulty?");
+  scanf_s("%d", &menuinputdifficulty);
+  if (menuinputdifficulty > 3 || menuinputdifficulty < 0)
+  {
+    goto difficultyselection;
+  }
   int again = 1;
   while (again == 1)
   {
-    again = Game();
+    again = Game(menuinputdifficulty);
+    if (menuinputdifficulty == 1)
+    {
+      printf("Do you want to try easy difficulty?\n Yes = [1] No = [2]");
+      scanf_s("%d", &menuinput);
+      if (menuinput == 1)
+      {
+        menuinputdifficulty = 2;
+      }
+    }
+    else
+    {
+      printf("Do you want to try HARD difficulty?\n Yes = [1] No = [2]");
+      scanf_s("%d", &menuinput);
+      if (menuinput == 1)
+      {
+        menuinputdifficulty = 1;
+      }
+    }
   }
-
   printf("\nThank you for playing!\n");
   system("Pause");
 }
@@ -63,7 +91,7 @@ int main()
 //The "Game" function is the function which will handle 
 //generating the cards, defining whose turn it is, starting other 
 //functions and handing cards back and forth to the winner of each round.
-int Game()
+int Game(int difficulty)
 {
   StruCard* pStartPlayer = NULL;
   StruCard* pStart = NULL;
@@ -91,7 +119,14 @@ int Game()
     }
     else if (PlayerTurn == false)
     {
-      Result = AI(pStart, pStartPlayer);
+      if (difficulty == 1)
+      {
+        Result = AI(pStart, pStartPlayer);
+      }
+      else
+      {
+        Result = DumbAI(pStart, pStartPlayer);
+      }
       PlayerTurn = true;
     }
     if (Result == 0)
@@ -321,13 +356,15 @@ int AI(StruCard* AICard, StruCard* PlayerCard)
 {
   int returncode = 0;
   int StatChooser = Randomizer(2);
-
+  int counter = CardCounter(PlayerCard);
   printf("\nThe computer takes it's turn.");
   printf("\nHere's your Card");
   printf("\n\nName = \t\t%s", PlayerCard->name);
   printf("\n\n");
   printf("Age =\t\t%.1lf \t[1]", PlayerCard->age);
   printf("\nFighting =\t%d \t[2]\n\n", PlayerCard->fighting);
+  printf("\nYou:%d", counter);
+  printf("\nAI:%d\n", (10 - counter));
   Sleep(2500);
 
   if (StatChooser == 0)
@@ -359,12 +396,59 @@ int AI(StruCard* AICard, StruCard* PlayerCard)
   return returncode;
 }
 
+int DumbAI(StruCard* AICard, StruCard* PlayerCard)
+{
+  int returncode = 0;
+  int DumbChooser = Randomizer(4);
+  int counter = CardCounter(PlayerCard);
+  printf("\nThe computer takes it's turn.");
+  printf("\nHere's your Card");
+  printf("\n\nName = \t\t%s", PlayerCard->name);
+  printf("\n\n");
+  printf("Age =\t\t%.1lf \t[1]", PlayerCard->age);
+  printf("\nFighting =\t%d \t[2]\n\n", PlayerCard->fighting);
+  printf("\nYou:%d", counter);
+  printf("\nAI:%d\n", (10 - counter));
+  Sleep(2500);
+
+  switch (DumbChooser)
+  {
+    case 0:
+      printf("\nThe Computer bets lower on fighting!\n\n");
+      break;
+    case 1:
+      printf("\nThe Computer bets higher on fighting!\n\n");
+      break;
+    case 2:
+      printf("\nThe Computer bets lower on age!\n\n");
+      break;
+    case 3:
+      printf("\nThe Computer bets higher on age!\n\n");
+      break;
+    default:
+      system("cls");
+      printf("You have found a bug in easy mode, please consult the devs with the code 'x569v0'");
+      Sleep(100000);
+      break;
+  }
+  if (DumbChooser == 0)
+  {
+    returncode = 1;
+  }
+  else
+    returncode = 0;
+
+  //ignore all that tbh its gonna be overwritten, it should give the illusion of playing
+  return returncode;
+}
+
 //This is the function that communicates with the player and takes their input.
 //It also starts the comparison if it is the player's turn.
 int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL, bool turn)
 {
-  int choiceHL = 0;
-  int choiceST = 0;
+    int choiceHL = 0;
+    int choiceST = 0;
+    int counter = CardCounter(PlayerCard);
     system("cls");
     printf("\nITS YOUR TURN.");
     printf("\nHere's your Card");
@@ -372,6 +456,8 @@ int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL, bool turn)
     printf("\n\n");
     printf("Age =\t\t%.1lf \t[1]", PlayerCard->age);
     printf("\nFighting =\t%d \t[2]", PlayerCard->fighting);
+    printf("\nYou:%d", counter);
+    printf("\nAI:%d", (10 - counter));
     printf("\n\nWhich stat do you want to bet on? \n");
     wronginputST:
     scanf_s("%d", &choiceST);
@@ -422,3 +508,14 @@ int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL, bool turn)
       }
     }
   }
+
+int CardCounter(StruCard* PlayerCards)
+{
+  int counter = 1;
+  while (PlayerCards->pNext != NULL)
+  {
+    PlayerCards = PlayerCards->pNext;
+    counter++;
+  }
+  return counter;
+}
