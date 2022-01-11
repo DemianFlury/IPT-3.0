@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <Windows.h>
 
 //Defining a globally used struct, so it won't be newly declared everytime 
 //the "Game" function gets used
@@ -27,9 +28,6 @@ int PlayerMenuIG(StruCard*, StruCard*, short, bool);
 
 
 
-
-
-//Both
 //The "main" function will help us set what the game function does.
 //Therefore we will declare a [bool] array which is given to the "Game" function.
 //The "main" function is mostly used for menus which appear b4 the actual game.
@@ -62,7 +60,6 @@ int main()
   system("Pause");
 }
 
-//Both
 //The "Game" function is the function which will handle 
 //generating the cards, defining whose turn it is, starting other 
 //functions and handing cards back and forth to the winner of each round.
@@ -156,7 +153,7 @@ int Game()
   return 0;
 }
 
-//Marvin
+//Adds the cards to the first list
 StruCard* AddCard(StruCard* pStart, StruCard* pNew)
 {
   pNew->pNext = NULL;
@@ -171,7 +168,7 @@ StruCard* AddCard(StruCard* pStart, StruCard* pNew)
   return pStart;
 }
 
-//Demian
+//Creates the cards
 StruCard* CreateCard(const char* name, int par1, double par2)
 {
   StruCard* newCard = (StruCard*)malloc(sizeof(StruCard));
@@ -181,14 +178,14 @@ StruCard* CreateCard(const char* name, int par1, double par2)
   return newCard;
 }
 
-//Demian
+//Outputs the list
 void OutputList(StruCard* pStart)
 {
   for (StruCard* pTmp = pStart; pTmp != NULL; pTmp = pTmp->pNext)
     printf("Name = %s\n", pTmp->name);
 }
 
-//Both, Marvin's approach was more compact so we used his
+//Shuffles the cards and gives 5 to the player and 5 to the computer
 StruCard** ShuffleCards(StruCard* pStart)
 {
   StruCard* pSelection = pStart;
@@ -258,14 +255,12 @@ StruCard** ShuffleCards(StruCard* pStart)
   return Returnpointer;
 }
 
-//Demian
 int Randomizer(int range) 
 {
   srand(time(NULL));
   return (rand() % range);
 }
 
-//Marvin
 //Player chose greater than
 int GreaterThan(StruCard* LP, StruCard* CP, short stat)
 {
@@ -292,7 +287,6 @@ int GreaterThan(StruCard* LP, StruCard* CP, short stat)
     return 99;
 }
 
-//Marvin
 //Player chose lesser than
 int LesserThan(StruCard* LP, StruCard* CP, short stat)
 {
@@ -319,7 +313,6 @@ int LesserThan(StruCard* LP, StruCard* CP, short stat)
     return 99;
 }
 
-//Demian
 //The Coputer choses the stat to play randomly
 //if he choses the fighting stat it looks if its higher or 
 //lower than 40 and then choses to play higher or lower.
@@ -329,7 +322,13 @@ int AI(StruCard* AICard, StruCard* PlayerCard)
   int returncode = 0;
   int StatChooser = Randomizer(2);
 
-  printf("\nThe computer takes it's turn.\n");
+  printf("\nThe computer takes it's turn.");
+  printf("\nHere's your Card");
+  printf("\n\nName = \t\t%s", PlayerCard->name);
+  printf("\n\n");
+  printf("Age =\t\t%.1lf \t[1]", PlayerCard->age);
+  printf("\nFighting =\t%d \t[2]\n\n", PlayerCard->fighting);
+  Sleep(2500);
 
   if (StatChooser == 0)
   {
@@ -357,15 +356,9 @@ int AI(StruCard* AICard, StruCard* PlayerCard)
       printf("\nThe Computer bets higher on age!\n\n");
     }
   }
-  printf("\n\nHere's your Card");
-  printf("\n\nName = \t\t%s", PlayerCard->name);
-  printf("\n\n");
-  printf("Age =\t\t%.1lf \t[1]", PlayerCard->age);
-  printf("\nFighting =\t%d \t[2]\n\n", PlayerCard->fighting);
   return returncode;
 }
 
-//Marvin
 //This is the function that communicates with the player and takes their input.
 //It also starts the comparison if it is the player's turn.
 int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL, bool turn)
