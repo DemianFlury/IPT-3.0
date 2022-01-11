@@ -55,7 +55,7 @@ int main()
   }
   difficultyselection:
   system("cls");
-  printf("Do you want to play HARD[1] or easy[2] difficulty?");
+  printf("Do you want to play HARD [1] or easy [2] difficulty? \n");
   scanf_s("%d", &menuinputdifficulty);
   if (menuinputdifficulty > 3 || menuinputdifficulty < 0)
   {
