@@ -29,7 +29,7 @@ int PlayerMenuIG(StruCard*, StruCard*, short, bool);
 
 
 
-//Marvin
+//Both
 //The "main" function will help us set what the game function does.
 //Therefore we will declare a [bool] array which is given to the "Game" function.
 //The "main" function is mostly used for menus which appear b4 the actual game.
@@ -62,7 +62,7 @@ int main()
   system("Pause");
 }
 
-//Demian
+//Both
 //The "Game" function is the function which will handle 
 //generating the cards, defining whose turn it is, starting other 
 //functions and handing cards back and forth to the winner of each round.
@@ -156,7 +156,7 @@ int Game()
   return 0;
 }
 
-//Demian
+//Marvin
 StruCard* AddCard(StruCard* pStart, StruCard* pNew)
 {
   pNew->pNext = NULL;
@@ -336,12 +336,12 @@ int AI(StruCard* AICard, StruCard* PlayerCard)
     if (AICard->fighting <= 40)
     {
       returncode = LesserThan(PlayerCard, AICard, StatChooser);
-      printf("\nThe Computer bets lower on fighting!\n");
+      printf("\nThe Computer bets lower on fighting!\n\n");
     }
     else
     {
       returncode = GreaterThan(PlayerCard, AICard, StatChooser);
-      printf("\nThe Computer bets higher on fighting!\n");
+      printf("\nThe Computer bets higher on fighting!\n\n");
     }
   }
   else
@@ -349,14 +349,19 @@ int AI(StruCard* AICard, StruCard* PlayerCard)
     if (AICard->age <= 50)
     {
       returncode = LesserThan(PlayerCard, AICard, StatChooser);
-      printf("\nThe Computer bets lower on age!\n");
+      printf("\nThe Computer bets lower on age!\n\n");
     }
     else
     {
       returncode = GreaterThan(PlayerCard, AICard, StatChooser);
-      printf("\nThe Computer bets higher on age!\n");
+      printf("\nThe Computer bets higher on age!\n\n");
     }
   }
+  printf("\n\nHere's your Card");
+  printf("\n\nName = \t\t%s", PlayerCard->name);
+  printf("\n\n");
+  printf("Age =\t\t%.1lf \t[1]", PlayerCard->age);
+  printf("\nFighting =\t%d \t[2]\n\n", PlayerCard->fighting);
   return returncode;
 }
 
