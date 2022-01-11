@@ -416,7 +416,7 @@ int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL, bool turn)
       }
       default:
       {
-        printf("Computer broken...");
+        printf("PLease consult the developers, thank you!");
         system("pause");
         return 102;
       }
