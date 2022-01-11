@@ -29,17 +29,16 @@ int PlayerMenuIG(StruCard*, StruCard*, short, bool);
 
 
 
+//Marvin
 //The "main" function will help us set what the game function does.
 //Therefore we will declare a [bool] array which is given to the "Game" function.
 //The "main" function is mostly used for menus which appear b4 the actual game.
-
-//Marvin
 int main()
 {
   //Defining [bool] array.
   int menuinput;
-  printf("Hello Player!\nThis is the best unfinished \x22Quartett\x22\n");
-  printf("Are you playing \x22Quartett\x22 for the first time?\nYes = [1], No = [2]\n");
+  printf("Hello Player!\nThis is the best \x22Star Wars Quartett\x22\n");
+  printf("Are you playing for the first time?\nYes = [1], No = [2]\n");
   scanf_s("%d", &menuinput);
   if (menuinput == 1)
   {
@@ -129,7 +128,7 @@ int Game()
       pEnd->pNext = pTmp;
       pTmp->pNext = NULL;
       pTmp = pEnd;
-      pEnd = pStartPlayer;
+      pEnd = pStart;
       while (pEnd->pNext != NULL)
         pEnd = pEnd->pNext;
       pEnd->pNext = pTmp;
@@ -147,7 +146,7 @@ int Game()
     printf("You lose the Game\n.");
 
 
-  printf("Do you want to play again? Yes = [1] No = [2]\n");
+  printf("Do you want to play again? \nYes = [1] No = [2]\n");
   int again;
   scanf_s("%i", &again);
   if (again == 1)
@@ -208,8 +207,8 @@ StruCard** ShuffleCards(StruCard* pStart)
   //Pick out 5 cards
   for (int index = 0; index < 5; index++)
   {
-    //RandomizerVar = Randomizer(10);
-    //if (RandomizerVar == 0)
+    RandomizerVar = Randomizer(10);
+    if (RandomizerVar == 0)
       RandomizerVar = 10;
     for (int inindex = 0; inindex < RandomizerVar; inindex++)
     {
@@ -248,10 +247,7 @@ StruCard** ShuffleCards(StruCard* pStart)
   }
   pSelection->pNext = NULL;
   pSelectionPlayer->pNext = NULL;
-  OutputList(pStart);
-  printf("\n\n");
-  OutputList(pStartPlayer);
-  printf("\n\n");
+
   system("pause");
 
   //return both starts of the list with a pointer array
@@ -323,7 +319,7 @@ int LesserThan(StruCard* LP, StruCard* CP, short stat)
     return 99;
 }
 
-//Marvin
+//Demian
 //The Coputer choses the stat to play randomly
 //if he choses the fighting stat it looks if its higher or 
 //lower than 40 and then choses to play higher or lower.
@@ -428,5 +424,3 @@ int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL, bool turn)
       }
     }
   }
-
-
