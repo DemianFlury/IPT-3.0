@@ -396,6 +396,7 @@ int AI(StruCard* AICard, StruCard* PlayerCard)
   return returncode;
 }
 
+//AI for easy mode
 int DumbAI(StruCard* AICard, StruCard* PlayerCard)
 {
   int returncode = 0;
@@ -456,7 +457,7 @@ int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL, bool turn)
     printf("\n\n");
     printf("Age =\t\t%.1lf \t[1]", PlayerCard->age);
     printf("\nFighting =\t%d \t[2]", PlayerCard->fighting);
-    printf("\nYou:%d", counter);
+    printf("\n\nYou:%d", counter);
     printf("\nAI:%d", (10 - counter));
     printf("\n\nWhich stat do you want to bet on? \n");
     wronginputST:
@@ -502,13 +503,14 @@ int PlayerMenuIG(StruCard* PlayerCard, StruCard* AICard, short AIHoL, bool turn)
       }
       default:
       {
-        printf("PLease consult the developers, thank you!");
+        printf("Please consult the developers, thank you!");
         system("pause");
         return 102;
       }
     }
   }
 
+//counts how many cards the player has n order for the user to know
 int CardCounter(StruCard* PlayerCards)
 {
   int counter = 1;
